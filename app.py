@@ -36,12 +36,15 @@ def index():
 
                 # Generate audio for the AI response using the Ash voice
                 speech_file_path = Path(__file__).parent / "speech.mp3"
-                response = openai.Audio.speech.create(
-                    model="tts-1",
-                    voice="ash",
+                response = openai.Audio.create(
+                    model="whisper-1",  # Use the correct model for TTS
+                    voice="ash",  # Specify the Ash voice here
                     input=latest_answer,
                 )
-                response.stream_to_file(speech_file_path)
+
+                # Save the audio response to a file
+                with open(speech_file_path, 'wb') as audio_file:
+                    audio_file.write(response['data'])
 
             except Exception as e:
                 latest_answer = f"Error: {str(e)}"
