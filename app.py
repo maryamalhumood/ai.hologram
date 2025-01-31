@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify, send_file
 import openai
 from dotenv import load_dotenv
+from pathlib import Path
 
 # Load environment variables from .env file
 load_dotenv()
@@ -13,7 +14,7 @@ openai.api_key = api_key
 # Initialize Flask app
 app = Flask(__name__)
 
-# Store AI response temporarily (or use a database)
+# Store AI response temporarily
 latest_answer = ""
 
 # Route for Website 1 (Question Page)
@@ -26,7 +27,7 @@ def index():
             try:
                 # Get AI response from OpenAI API
                 chat_completion = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",  
+                    model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": user_input}]
                 )
                 global latest_answer
@@ -34,15 +35,13 @@ def index():
                 print(f"AI Response: {latest_answer}")
 
                 # Generate audio for the AI response using the Ash voice
-                response = openai.Audio.create(
+                speech_file_path = Path(__file__).parent / "speech.mp3"
+                response = openai.Audio.speech.create(
                     model="tts-1",
                     voice="ash",
                     input=latest_answer,
                 )
-
-                # Save the audio to file
-                with open("speech.mp3", "wb") as audio_file:
-                    audio_file.write(response['audio'])
+                response.stream_to_file(speech_file_path)
 
             except Exception as e:
                 latest_answer = f"Error: {str(e)}"
