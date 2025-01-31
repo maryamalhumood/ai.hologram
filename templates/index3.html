@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Response</title>
   <style>
-    /* Make sure body takes up full height and hide overflow */
     body {
       margin: 0;
       padding: 0;
       height: 100vh;
       overflow: hidden;
-      background-color: black; /* Black background */
+      background-color: black;
       color: white;
       display: flex;
       justify-content: center;
@@ -20,51 +19,69 @@
       position: relative;
     }
 
-    /* Full-screen video styling */
     video {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Make the video fill the entire screen */
-      z-index: -1; /* Put the video behind everything else */
+      object-fit: cover;
+      z-index: -1;
     }
 
-    /* Optional: Hide the AI response text */
     #answer-text {
-      display: none;  /* Hide the text, no captions visible */
+      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- Video element for the hologram -->
   <video autoplay loop muted>
     <source src="{{ url_for('static', filename='sorting.mp4') }}" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
-  <!-- Optional: Display the AI answer (it's hidden for now) -->
-  <div id="answer-text">{{ answer }}</div>
+  <!-- Form to submit a question -->
+  <form id="question-form">
+    <input type="text" id="question" name="question" placeholder="Ask me anything...">
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="answer-text"></div>
 
   <script>
-    // Text-to-Speech (TTS) function
+    // Prevent form refresh and submit via AJAX
+    document.getElementById('question-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Stop the form from refreshing the page
+
+      const userInput = document.getElementById('question').value;
+
+      // Send user input to the server via fetch (AJAX)
+      fetch('/', {
+        method: 'POST',
+        body: new URLSearchParams({ 'question': userInput }),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const answer = data.answer;
+        document.getElementById('answer-text').innerText = `AI Response: ${answer}`; // Update answer on the page
+        speakText(answer); // Speak the answer
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('answer-text').innerText = 'Sorry, there was an error.';
+      });
+    });
+
+    // Text-to-Speech function
     function speakText(text) {
       const speech = new SpeechSynthesisUtterance(text);
-      speech.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Male'); // You can choose any voice here
+      speech.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Male');
       speech.volume = 1;
       speech.rate = 1;
       speech.pitch = 1;
       window.speechSynthesis.speak(speech);
     }
-
-    // Trigger the TTS when the page loads with the AI answer
-    window.onload = function() {
-      const answerText = "{{ answer }}"; // Get the AI answer from the template
-      if (answerText) {
-        speakText(answerText); // Speak the answer
-      }
-    };
   </script>
 </body>
 </html>
