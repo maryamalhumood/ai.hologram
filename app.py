@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, jsonify
 import openai
 from dotenv import load_dotenv
 from pathlib import Path
@@ -71,6 +71,11 @@ def ai_response():
 @app.route('/get-audio')
 def get_audio():
     return send_file("speech.mp3", as_attachment=False)
+
+# New route to fetch the latest AI response
+@app.route('/latest-answer')
+def latest_answer():
+    return jsonify({'answer': latest_answer})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
