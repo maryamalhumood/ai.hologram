@@ -74,7 +74,7 @@ def get_audio():
 
 # New route to fetch the latest AI response
 @app.route('/latest-answer')
-def latest_answer():
+def get_latest_answer():  # Function name changed to resolve conflict
     return jsonify({'answer': latest_answer})
 
 if __name__ == '__main__':
