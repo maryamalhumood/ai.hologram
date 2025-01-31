@@ -20,9 +20,9 @@ latest_answer = ""
 # Generate audio using OpenAI's TTS with Ash voice
 def generate_tts(text, filename="speech.mp3"):
     try:
-        # TTS with "Ash" voice
+        # Use the correct TTS model, e.g., "text-to-speech"
         response = openai.Audio.create(
-            model="whisper-1",  # Replace with the correct TTS model if needed
+            model="text-to-speech-1",  # Correct TTS model
             voice="ash",  # Ash voice
             input=text,
         )
