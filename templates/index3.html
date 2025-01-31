@@ -51,7 +51,7 @@
     // Text-to-Speech (TTS) function
     function speakText(text) {
       const speech = new SpeechSynthesisUtterance(text);
-      speech.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Male'); 
+      speech.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Male');
       speech.volume = 1;
       speech.rate = 1;
       speech.pitch = 1;
