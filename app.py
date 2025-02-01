@@ -20,14 +20,12 @@ latest_answer = ""
 # Generate audio using OpenAI's TTS with Ash voice
 def generate_tts(text, filename="speech.mp3"):
     try:
-        # Use the correct TTS model, e.g., "text-to-speech"
         response = openai.Audio.create(
             model="text-to-speech-1",  # Correct TTS model
             voice="ash",  # Ash voice
             input=text,
         )
         
-        # Save the audio file
         speech_file_path = Path(__file__).parent / filename
         with open(speech_file_path, 'wb') as audio_file:
             audio_file.write(response['data'])
@@ -74,7 +72,7 @@ def get_audio():
 
 # New route to fetch the latest AI response
 @app.route('/latest-answer')
-def get_latest_answer():  # Function name changed to resolve conflict
+def latest_answer_route():
     return jsonify({'answer': latest_answer})
 
 if __name__ == '__main__':
