@@ -45,8 +45,12 @@ def index():
             try:
                 # Get AI response from OpenAI API
                 chat_completion = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": user_input}]
+                   openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": f"Respond in a friendly, concise manner: {user_input}"}],
+    temperature=0.7,
+    max_tokens=80
+)
                 )
                 latest_answer = chat_completion['choices'][0]['message']['content']
                 print(f"AI Response: {latest_answer}")
